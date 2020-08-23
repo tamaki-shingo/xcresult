@@ -74,6 +74,21 @@ module XCResult
       end
     end
 
+    def get_action_test_summary_identifiable_object(id: nil, type: nil, parent: nil)
+      raw = execute_cmd("xcrun xcresulttool get --format json --path #{path} --id #{id}")
+      data = JSON.parse(raw)
+    
+      if type == 'ActionTestSummaryGroup'
+        return XCResult::ActionTestSummaryGroup.new(data, parent)
+      elsif type == 'ActionTestSummary'
+        return XCResult::ActionTestSummary.new(data, parent)
+      elsif type == 'ActionTestMetadata'
+        return XCResult::ActionTestMetadata.new(data, parent)
+      else
+        raise "Unsupported type: #{type}"
+      end    
+    end
+
     private
 
     def get_result_bundle_json(id: nil)
